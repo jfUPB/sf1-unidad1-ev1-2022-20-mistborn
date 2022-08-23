@@ -59,6 +59,7 @@ void task3()
         pinMode(redLed, OUTPUT);
         keyCounter = 0;
         lastState = 0;
+        digitalWrite(redLed,HIGH);
         taskState = TaskStates::SLOW;
         break;
     }
@@ -82,6 +83,7 @@ void task3()
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
+                digitalWrite(redLed,HIGH);
                 taskState = TaskStates::MEDIUM;
             }
         }
@@ -121,6 +123,7 @@ void task3()
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
+                digitalWrite(redLed,HIGH);
                 taskState = TaskStates::SLOW;
             }
         }
@@ -136,10 +139,12 @@ void task3()
             buttonEvt.trigger = false;
             if (buttonEvt.whichButton == BUTTONS::BTN1)
             {
+                digitalWrite(redLed,HIGH);
                 taskState = TaskStates::SLOW;
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
+                digitalWrite(redLed,HIGH);
                 taskState = TaskStates::FAST;
             }
         }
