@@ -92,11 +92,35 @@ void task3()
     }
     case TaskStates::WAIT_SLOW:
     {
+        uint32_t currentTime = millis();
+        if ((currentTime - lasTime) >= INTERVAL)
+        {
+            digitalWrite(redLed, ledStatus);
+            ledStatus = LOW;
+        }
+         if (buttonEvt.trigger == true)
+        {
+            buttonEvt.trigger = false;
+            if (buttonEvt.whichButton == BUTTONS::BTN1)
+            {
+                taskState = TaskStates::SLOW;
+                Serial.print("Entra a slow\n");
+            }
+            else if (buttonEvt.whichButton == BUTTONS::BTN2)
+            {
+                taskState = TaskStates::FAST;
+                Serial.print("entra a FAST\n");
+            }
+        }
         // Serial.print("slow");
     }
     case TaskStates::MEDIUM:
     {
-        // Serial.print("TE AMO");
+        // Serial.print("medium");
+    }
+    case TaskStates::FAST:
+    {
+        // Serial.print("entra a fast");
     }
     default:
     {
