@@ -50,7 +50,9 @@ void task3()
 
     static uint32_t lasTime;
     static bool ledStatus = false;
-    static constexpr uint32_t INTERVAL = 1000;
+    static constexpr uint32_t intervalSlow = 1000;
+    static constexpr uint32_t intervalMedium = 500;
+    static constexpr uint32_t intervalFast = 250;
 
     switch (taskState)
     {
@@ -67,7 +69,7 @@ void task3()
     case TaskStates::SLOW:
     {
         uint32_t currentTime = millis();
-        if ((currentTime - lasTime) >= INTERVAL)
+        if ((currentTime - lasTime) >= intervalSlow)
         {
             lasTime = currentTime;
             digitalWrite(redLed, ledStatus);
@@ -79,7 +81,7 @@ void task3()
             if (buttonEvt.whichButton == BUTTONS::BTN1)
             {
                 taskState = TaskStates::WAIT_SLOW;
-                Serial.print("Entró a wait_slow\n");
+                Serial.print("Entra a wait_slow 1\n");
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
@@ -93,12 +95,46 @@ void task3()
     case TaskStates::WAIT_SLOW:
     {
         uint32_t currentTime = millis();
-        if ((currentTime - lasTime) >= INTERVAL)
+        if ((currentTime - lasTime) >= intervalSlow)
         {
-            digitalWrite(redLed, ledStatus);
-            ledStatus = LOW;
+            digitalWrite(redLed,LOW);
+            taskState = TaskStates::STAY_OFF;
         }
-         if (buttonEvt.trigger == true)
+        
+        break;
+        // Serial.print("slow");
+    }
+    case TaskStates::MEDIUM:
+    {
+        // Serial.print("medium");
+        uint32_t currentTime = millis();
+
+        if ((currentTime - lasTime) >= intervalMedium)
+        {
+            lasTime = currentTime;
+            digitalWrite(redLed, ledStatus);
+            ledStatus = !ledStatus;
+        }
+
+        if (buttonEvt.trigger == true)
+        {
+            buttonEvt.trigger = false;
+            if (buttonEvt.whichButton == BUTTONS::BTN1)
+            {
+                taskState = TaskStates::WAIT_MEDIUM;
+                Serial.print("Entra a wait_medium 1\n");
+            }
+            else if (buttonEvt.whichButton == BUTTONS::BTN2)
+            {
+                taskState = TaskStates::SLOW;
+                Serial.print("entra a slow 2\n");
+            }
+        }
+        break;
+    }
+    case TaskStates::STAY_OFF:
+    {
+    if (buttonEvt.trigger == true)
         {
             buttonEvt.trigger = false;
             if (buttonEvt.whichButton == BUTTONS::BTN1)
@@ -112,15 +148,19 @@ void task3()
                 Serial.print("entra a FAST\n");
             }
         }
-        // Serial.print("slow");
-    }
-    case TaskStates::MEDIUM:
-    {
-        // Serial.print("medium");
+        break;
     }
     case TaskStates::FAST:
     {
-        // Serial.print("entra a fast");
+        uint32_t currentTime = millis();
+
+        if ((currentTime - lasTime) >= intervalFast)
+        {
+            lasTime = currentTime;
+            digitalWrite(redLed, ledStatus);
+            ledStatus = !ledStatus;
+        }
+        break;
     }
     default:
     {
