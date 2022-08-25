@@ -55,11 +55,11 @@ void task3()
     {
     case TaskStates::INIT:
     {
-
         pinMode(redLed, OUTPUT);
         keyCounter = 0;
         lastState = 0;
-        digitalWrite(redLed,HIGH);
+        digitalWrite(redLed, HIGH);
+        ledStatus = true;
         taskState = TaskStates::SLOW;
         break;
     }
@@ -70,7 +70,7 @@ void task3()
         if ((currentTime - lasTime) >= intervalSlow)
         {
             lasTime = currentTime;
-            //digitalWrite(redLed,HIGH);
+            // digitalWrite(redLed,HIGH);
             digitalWrite(redLed, ledStatus);
             ledStatus = !ledStatus;
         }
@@ -83,7 +83,8 @@ void task3()
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
-                digitalWrite(redLed,HIGH);
+                digitalWrite(redLed, HIGH);
+                ledStatus = true;
                 taskState = TaskStates::MEDIUM;
             }
         }
@@ -96,10 +97,13 @@ void task3()
 
         if ((currentTime - lasTime) >= intervalSlow)
         {
-            //digitalWrite(redLed,LOW);
+            // digitalWrite(redLed,LOW);
+            digitalWrite(redLed, LOW);
+            ledStatus = false;
+            lastState = 1;
             taskState = TaskStates::STAY_OFF;
         }
-        
+
         break;
     }
     case TaskStates::MEDIUM:
@@ -109,7 +113,7 @@ void task3()
         if ((currentTime - lasTime) >= intervalMedium)
         {
             lasTime = currentTime;
-            //digitalWrite(redLed,HIGH);
+            // digitalWrite(redLed,HIGH);
             digitalWrite(redLed, ledStatus);
             ledStatus = !ledStatus;
         }
@@ -123,7 +127,8 @@ void task3()
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
-                digitalWrite(redLed,HIGH);
+                digitalWrite(redLed, HIGH);
+                ledStatus = true;
                 taskState = TaskStates::SLOW;
             }
         }
@@ -131,20 +136,20 @@ void task3()
     }
     case TaskStates::STAY_OFF:
     {
-        digitalWrite(redLed,LOW);
-        lastState = 1;
 
-    if (buttonEvt.trigger == true)
+        if (buttonEvt.trigger == true)
         {
             buttonEvt.trigger = false;
             if (buttonEvt.whichButton == BUTTONS::BTN1)
             {
-                digitalWrite(redLed,HIGH);
+                digitalWrite(redLed, HIGH);
+                ledStatus = true;
                 taskState = TaskStates::SLOW;
             }
             else if (buttonEvt.whichButton == BUTTONS::BTN2)
             {
-                digitalWrite(redLed,HIGH);
+                digitalWrite(redLed, HIGH);
+                ledStatus = true;
                 taskState = TaskStates::FAST;
             }
         }
@@ -157,7 +162,7 @@ void task3()
         if ((currentTime - lasTime) >= intervalFast)
         {
             lasTime = currentTime;
-            //digitalWrite(redLed,HIGH);
+            // digitalWrite(redLed,HIGH);
             digitalWrite(redLed, ledStatus);
             ledStatus = !ledStatus;
         }
@@ -173,18 +178,15 @@ void task3()
                 if (compareKeys(secret, fastKey) == true && lastState == 1)
                 {
                     Serial.print("last state 1\n");
-                    //digitalWrite(redLed,LOW);
+                    // digitalWrite(redLed,LOW);
                     taskState = TaskStates::STAY_OFF;
-                    
                 }
                 else if (compareKeys(secret, fastKey) == true && lastState == 2)
                 {
                     Serial.print("last state 2\n");
-                    //digitalWrite(redLed,HIGH);
+                    // digitalWrite(redLed,HIGH);
                     taskState = TaskStates::STAY_ON;
-                    
                 }
-                
             }
         }
         break;
@@ -200,7 +202,8 @@ void task3()
     }
     case TaskStates::STAY_ON:
     {
-        digitalWrite(redLed,HIGH);
+        digitalWrite(redLed, HIGH);
+        ledStatus = true;
         lastState = 2;
 
         if (buttonEvt.trigger == true)
